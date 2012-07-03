@@ -1,0 +1,52 @@
+# compiler options
+CC = gcc
+
+COMPILE = -c -pipe
+COPT = -Wall -O2 -fno-strict-aliasing -funroll-loops -m64 -march=native -ffast-math -mfpmath=387
+#COPT = -Wall -g
+
+INCLUDES = -I/usr/include/SDL -I/usr/X11R6/include -I /usr/include/db4.5.20
+LIBDIRS = -L/usr/local/lib -L/usr/X11R6/lib
+
+LIBS = -lSDL -lGL -lGLU -ljpeg -ldb-4.6
+
+CFLAGS = $(COMPILE) $(COPT) $(INCLUDES) -DCI_LINUX
+LFLAGS = $(LIBDIRS)
+# LFLAGS = $(LIBDIRS)
+
+# groups of things
+.SUFFIXES: .c .o
+
+.c.o:
+	$(CC) $(CFLAGS) $<
+
+HEADERS = fly.h cimage.h cimagelist.h pqueue.h texturepool.h
+SOURCES = fly.c cimage.c cimagelist.c pqueue.c texturepool.c
+OBJECTS = cimage.o cimagelist.o pqueue.o texturepool.o
+TARGETS = fly
+
+# rules
+default: $(OBJECTS) $(TARGETS)
+
+all: default
+
+clean:
+	rm -f fly.o $(OBJECTS) $(TARGETS)
+
+indent:
+	indent -fc1 -bad -bap -sob -ncdb -sc -br -ce -cli4 -nss -npcs -cs -lp -ci4 -ip4 -i4 -l100 -ts0 $(SOURCES) $(HEADERS) $(TEST_SOURCES)
+	rm -f *~
+
+# the main programs
+fly: fly.o $(OBJECTS)
+	$(CC) $(LFLAGS) fly.o $(OBJECTS) $(LIBS) -o $@
+
+# deps
+
+fly.o: fly.c $(HEADERS)
+
+cimage.o: cimage.c cimage.h
+cimagelist.o: cimagelist.c cimagelist.h
+pqueue.o: pqueue.c pqueue.h
+texturepool.o: texturepool.c texturepool.h
+

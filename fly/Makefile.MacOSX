@@ -1,0 +1,56 @@
+# compiler options
+CC = /opt/local/bin/gcc-mp-4.4
+
+COMPILE = -c -pipe
+# COPT = -Wall -O2 -fno-strict-aliasing -funroll-loops -ffast-math -mfpmath=387 -march=native
+COPT = -Wall -O3
+
+INCLUDES = -I/opt/local/include/SDL -I/opt/local/include -I/usr/X11/include -I/opt/local/include/db44
+LIBDIRS = -L/opt/local/lib -L/usr/X11R6/lib -L/opt/local/lib/db44
+
+# if -D CI_THREADS: -lpthread
+LIBS = -lSDL -lSDLmain -lGL -lGLU -ljpeg -ldb-4.4
+
+# if -D CI_THREADS: -D_THREAD_SAFE
+CFLAGS = $(COMPILE) $(COPT) $(INCLUDES) -I/opt/local/include/SDL -D_GNU_SOURCE=1 -DCI_MACOSX
+LFLAGS = $(LIBDIRS) -Wl,-framework,Cocoa,-framework,OpenGL
+
+# LFLAGS = $(LIBDIRS)
+
+# groups of things
+.SUFFIXES: .c .o
+
+.c.o:
+	$(CC) $(CFLAGS) $<
+
+HEADERS = fly.h cimage.h cimagelist.h pqueue.h texturepool.h
+SOURCES = fly.c cimage.c cimagelist.c pqueue.c texturepool.c
+OBJECTS = cimage.o cimagelist.o pqueue.o texturepool.o
+TARGETS = fly
+
+# rules
+default: $(OBJECTS) $(TARGETS)
+
+all: default
+
+clean:
+	rm -f fly.o $(OBJECTS) $(TARGETS)
+
+indent:
+	indent -fc1 -bad -bap -sob -ncdb -sc -br -ce -cli4 -nss -npcs -cs -lp -ci4 -ip4 -i4 -l100 -ts0 $(SOURCES) $(HEADERS) $(TEST_SOURCES)
+	rm -f *~
+
+# the main programs
+fly: fly.o $(OBJECTS)
+	$(CC) $(LFLAGS) fly.o $(OBJECTS) $(LIBS) -o $@
+	strip $@
+
+# deps
+
+fly.o: fly.c $(HEADERS)
+
+cimage.o: cimage.c cimage.h
+cimagelist.o: cimagelist.c cimagelist.h
+pqueue.o: pqueue.c pqueue.h
+texturepool.o: texturepool.c texturepool.h
+

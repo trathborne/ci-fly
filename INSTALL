@@ -1,0 +1,76 @@
+Installation hints for
+
+    Continuous Imaging 'fly'
+    Copyright (C) 2008-2012  David Lowy & Tom Rathborne
+
+------------------------------------------------------------------------------
+
+Linux
+
+Install CPAN modules Data::SExpression and DB_File.
+Your distro probably has packages for these.
+    (hopefully, DB_File is built with db_185.h;
+        if not, see OSX instructions below)
+
+For 'prep':
+    Install ImageMagick, jpegtools, metapixel
+    (edit prep/_mk_thumb.sh if you want to use netpbm instead of ImageMagick)
+
+For 'fly':
+    Development packages for:
+    SDL, X11, GL, GLU, jpeg, db, gcc, make
+    (at least, I think that's all)
+
+------------------------------------------------------------------------------
+
+MacOSX
+
+I used MacPorts. YMMV.
+
+Install CPAN module Data::SExpression.
+Install the db44 port.
+Install CPAN module DB_File using these settings in config.in:
+    INCLUDE = /opt/local/include/db44
+    LIB     = /opt/local/lib/db44
+    PREFIX  = size_t
+    HASH    = u_int32_t
+    DBNAME  = -ldb-4.4
+This will ensure that 'prep/_mk_lists2scidb.pl' creates db files
+that 'fly' can read.
+
+For 'prep':
+    Install ports ImageMagick, jpeg, metapixel
+    (edit prep/_mk_thumb.sh if you want to use netpbm instead of ImageMagick)
+
+For 'fly':
+    Install ports libsdl, mesa, jpeg, db44, gcc44, make.
+
+------------------------------------------------------------------------------
+
+In case you want to make a portable OSX bundle ...
+
+$ otool -L fly | grep opt/local/lib | awk '{print $1}' | xargs -n1 port provides
+    /opt/local/lib/db44/libdb-4.4.dylib is provided by: db44
+    /opt/local/lib/gcc44/libgcc_s.1.dylib is provided by: gcc44
+    /opt/local/lib/libGL.1.dylib is provided by: mesa
+    /opt/local/lib/libGLU.1.dylib is provided by: mesa
+    /opt/local/lib/libSDL-1.2.0.dylib is provided by: libsdl
+    /opt/local/lib/libjpeg.8.dylib is provided by: jpeg
+
+Recursive dependencies resolved: (may be stale)
+    /opt/local/lib/db44/libdb-4.4.dylib
+    /opt/local/lib/gcc44/libgcc_s.1.dylib
+    /opt/local/lib/libGL.1.dylib
+    /opt/local/lib/libGLU.1.dylib
+    /opt/local/lib/libSDL-1.2.0.dylib
+    /opt/local/lib/libX11.6.dylib
+    /opt/local/lib/libXau.6.dylib
+    /opt/local/lib/libXdmcp.6.dylib
+    /opt/local/lib/libXext.6.dylib
+    /opt/local/lib/libjpeg.8.dylib
+    /opt/local/lib/libxcb.1.dylib
+
+If these files are in lib/ use them with:
+    DYLD_LIBRARY_PATH=./lib ./fly
+
+------------------------------------------------------------------------------
