@@ -1,0 +1,65 @@
+Continuous Imaging 'fly'
+Copyright (C) 2008-2012  David Lowy & Tom Rathborne
+
+------------------------------------------------------------------------------
+
+SYNOPSIS
+
+The 'prep' directory contains a set of Perl and shell scripts which
+use metapixel <http://www.complang.tuwien.ac.at/schani/metapixel/>
+to create a mosaic for each of a set of images, made up of all of the
+images. A thumbnail is generated for each image, and a db file stores
+the mosaic reference information.
+
+'fly' is a C OpenGL program which reads a db file and loads its
+associated thumbnail JPEG images into texture memory, and lets you
+lets you use your mouse to fly through the described mosaics in
+realtime.
+
+Makefiles are provided for Linux and MacOSX.
+See INSTALL for dependency details.
+
+------------------------------------------------------------------------------
+
+USAGE
+
+  - in prep/, edit prep.sh
+        to set the mosaic resolution and thumbnail sizes
+  - in fly/, do 'make -f Makefile.[your os]' 
+  - put a bunch of same-sized images in image/
+  - run 'prep/prep.sh' to build the mosaic database
+  - run 'fly/fly' to fly!!!
+    Command-line Arguments:
+      -j        write each frame to a JPEG
+      -g WxH    make a window of this size instead of fullscreen
+    Mouse control:
+      - click left to zoom in
+      - drag middle to pan (uh, not quite right)
+      - click right to zoom out
+      - wheel up/down to control zoom speed
+    Keyboard:
+      - Esc or q to quit
+      - Space to pause/unpause
+      - . to step frame by frame
+      - m to toggle follow-without-click
+      - d to toggle debug
+      - Backspace to reset some stuff
+
+Enjoy!
+
+------------------------------------------------------------------------------
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+------------------------------------------------------------------------------
