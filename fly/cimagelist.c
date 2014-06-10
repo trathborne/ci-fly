@@ -87,7 +87,7 @@ cil_load_scidb(CIList * cil, char *sdbname)
     DBT key, value;
 
     CImage *ci, *sci, **nsubs;
-    short rcount, kv, size, x, y, i, *pt;
+    unsigned short rcount, kv, x, y, i, *pt;
     char *name;
 
     memset(&key, 0, sizeof(key));
@@ -120,8 +120,9 @@ cil_load_scidb(CIList * cil, char *sdbname)
 
     rcount = *pt; // first short is rcount
     cil->rcount = rcount;
+    // printf("Reading %d records\n", rcount);
     pt++;
-    size = *pt;     // second short is max data size
+    // size = *pt;     // second short is max data size ... but it's 0-terminated so ... whatever.
 
     cil->list = malloc(sizeof(CImage *) * rcount);
 
@@ -129,19 +130,19 @@ cil_load_scidb(CIList * cil, char *sdbname)
         kv = i+1;
         (sdb->get)(sdb, &key, &value, 0);
         pt = value.data;
-        // printf("XL index %d = 2 + %d * %d\n", pt[0], pt[1]);
+        // printf("XL index %d = 2 + %d * %d\n", (int) i, pt[0], pt[1]);
         name = (char *)(pt+2+pt[0]*pt[1]);
         ci = ci_create(name);
         assert(ci);
         cil->list[i] = ci;
-        // printf("XL #%d got length %d name %s\n", i+1, (int) value.size, name);
+        // printf("XL #%d got length %d name %s\n", (int) i+1, (int) value.size, name);
     }
 
     for( i = 0; i < rcount; i++) {
         ci = cil->list[i];
         kv = i+1;
         (sdb->get)(sdb, &key, &value, 0);
-        // printf("YL #%d got length %d\n", i+1, (int) value.size);
+        // printf("YL #%d got length %d\n", i+1, (int) value.size); // CME
         pt = value.data;
         ci->sx = pt[0]; pt++;
         ci->sy = pt[0]; pt++;
