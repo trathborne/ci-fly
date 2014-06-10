@@ -248,7 +248,6 @@ fly(SDL_Surface *screen, CIList *cil, unsigned long int do_jpeg)
     double zspeed = CI_ZOOM_INCREMENT;
     double ztx = 0.0;
     double zty = 0.0;
-    double zclickmag = 0.0;
 
     // log zoom
     double log_sx, log_2; // tile size constant
@@ -322,9 +321,7 @@ fly(SDL_Surface *screen, CIList *cil, unsigned long int do_jpeg)
             }
         }
 
-        // XXX write jpeg here for no cursor
-
-        if (do_jpeg) {
+        if (fly && do_jpeg) {
             write_jpeg_screenshot(screen, do_jpeg, "fly-%08ld.jpg");
             do_jpeg++;
         }
@@ -365,8 +362,6 @@ fly(SDL_Surface *screen, CIList *cil, unsigned long int do_jpeg)
         glEnd();
 
         glEnable(GL_TEXTURE_2D);
-
-        // XXX write jpeg here for cursor
 
         // timing and double buffer swap
 
@@ -486,14 +481,6 @@ fly(SDL_Surface *screen, CIList *cil, unsigned long int do_jpeg)
                 done = 1;
             }
         }
-
-        if (fcount >= 6000) { 
-            if (!(fcount % 30)) zspeed -= CI_ZOOM_INCREMENT;
-            if (fcount >= 10000) {
-                done = 1;
-            }
-        }
-
         /* Handle events done ************************************************/
 
         if (fly) { /* Calculate new coordinates */
@@ -512,7 +499,6 @@ fly(SDL_Surface *screen, CIList *cil, unsigned long int do_jpeg)
                 /* Project clicked pixel zpx,zpy -> ztx,zty */
                 ztx = cx + ( 2.0 * (((double)zpx / (double)width) - 0.5) / (scale));
                 zty = cy - ( 2.0 * (((double)zpy / (double)height) - 0.5) / (scale * rel_aspect));
-                zclickmag = mag;
             }
 
             // zoom according to mouseclick or pending zoom
@@ -597,7 +583,7 @@ main(int argc, char *argv[])
     ticks_start = SDL_GetTicks();
 
     /* Init texture pool */
-    tpool = tp_create(15360, 800); // This was supposed to keep fewer textures in VRAM, but it just fills VRAM.
+    tpool = tp_create(65535, 800); // This was supposed to keep fewer textures in VRAM, but it just fills VRAM.
 
     /* create CI List */
     cil = cil_create(tpool, "thumb/%s.jpg", "image/%s.jpg");

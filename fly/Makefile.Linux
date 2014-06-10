@@ -5,10 +5,10 @@ COMPILE = -c -pipe
 COPT = -Wall -O2 -fno-strict-aliasing -funroll-loops -m64 -march=native -ffast-math -mfpmath=387
 #COPT = -Wall -g
 
-INCLUDES = -I/usr/include/SDL -I/usr/X11R6/include -I /usr/include/db4.5.20
+INCLUDES = -I/usr/include/SDL -I/usr/X11R6/include -I/usr/include/db4.5.20
 LIBDIRS = -L/usr/local/lib -L/usr/X11R6/lib
 
-LIBS = -lSDL -lGL -lGLU -ljpeg -ldb-4.6
+LIBS = -lSDL -lGL -lGLU -ljpeg -ldb-6.0
 
 CFLAGS = $(COMPILE) $(COPT) $(INCLUDES) -DCI_LINUX
 LFLAGS = $(LIBDIRS)
